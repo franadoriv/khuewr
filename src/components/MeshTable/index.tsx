@@ -26,9 +26,13 @@ interface IMeshTable {
 }
 
 export default function MeshTable(props: IMeshTable) {
-  const { meshList } = props;
+  let { meshList } = props;
   const classes = useStyles();
-
+  let _meshList: StaticMeshActor[] = [];
+  for (let mesh of meshList || []) {
+    if (_meshList.indexOf((m) => m.id === mesh.id) === -1) _meshList.push(mesh);
+  }
+  console.log({ meshList });
   return (
     <TableContainer component={Paper} className={classes.container}>
       <Table className={classes.table} size="small" aria-label="a dense table">
@@ -44,7 +48,7 @@ export default function MeshTable(props: IMeshTable) {
           </TableRow>
         </TableHead>
         <TableBody>
-          {meshList?.map((mesh) => (
+          {_meshList?.map((mesh) => (
             <TableRow key={mesh.id}>
               <TableCell component="th" scope="row">
                 {mesh.name}

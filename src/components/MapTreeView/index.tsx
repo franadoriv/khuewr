@@ -4,7 +4,6 @@ import TreeView from "@material-ui/lab/TreeView";
 import TreeItem, { TreeItemProps } from "@material-ui/lab/TreeItem";
 import Typography from "@material-ui/core/Typography";
 import HomeWork from "@material-ui/icons/HomeWork";
-import DeleteIcon from "@material-ui/icons/Delete";
 import Label from "@material-ui/icons/Label";
 import MapIcon from "@material-ui/icons/Map";
 import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
@@ -89,7 +88,7 @@ function StyledTreeItem(props: StyledTreeItemProps) {
     bgColor,
     ...other
   } = props;
-  console.log({ other });
+
   return (
     <TreeItem
       label={
@@ -154,26 +153,24 @@ export default function MapTreeView(props: IMapTreeView) {
         defaultEndIcon={<div style={{ width: "100%" }} />}
       >
         <StyledTreeItem nodeId="3" labelText="Areas" labelIcon={Label}>
-          {mapAreas?.map((mapArea) => {
-            console.log({ mapArea });
-            return (
+          {mapAreas?.map((mapArea) => (
+            <StyledTreeItem
+              nodeId={mapArea._id}
+              key={mapArea._id}
+              labelText={mapArea.name}
+              labelIcon={MapIcon}
+              labelInfo={mapArea?.staticMeshActorList?.length}
+              color="#1a73e8"
+              bgColor="#e8f0fe"
+            >
               <StyledTreeItem
-                nodeId={mapArea._id}
-                labelText={mapArea.name}
-                labelIcon={MapIcon}
-                labelInfo={mapArea?.staticMeshActorList?.length}
-                color="#1a73e8"
-                bgColor="#e8f0fe"
-              >
-                {/*              <StyledTreeItem
                 nodeId={`${mapArea.name}.smal`}
                 labelText="staticMeshActorList"
                 labelIcon={HomeWork}
                 onClick={(evt) => onSelect?.("staticMeshActor", mapArea)}
-              />*/}
-              </StyledTreeItem>
-            );
-          })}
+              />
+            </StyledTreeItem>
+          ))}
         </StyledTreeItem>
       </TreeView>
     </Paper>

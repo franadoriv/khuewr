@@ -12,7 +12,8 @@ import {
   Menu,
   MenuItem,
   Backdrop,
-  CircularProgress
+  CircularProgress,
+  Select
 } from "@material-ui/core";
 import ExternalList from "../../components/ExternalList";
 import SaveIcon from "@material-ui/icons/Save";
@@ -38,6 +39,10 @@ const useStyles = makeStyles((theme) => ({
   backdrop: {
     zIndex: theme.zIndex.drawer + 1,
     color: "#fff"
+  },
+  selectEmpty: {
+    //marginTop: theme.spacing(2),
+    width: "100%"
   }
 }));
 
@@ -45,7 +50,8 @@ const initialState = {
   mouseX: null,
   mouseY: null,
   selected: { _id: "", id: "", name: "" },
-  loading: false
+  loading: false,
+  selectedMapID: null
 };
 
 export default function MapsPage() {
@@ -84,20 +90,24 @@ export default function MapsPage() {
     setState({ ...initialState, selected: state.selected, loading: false });
   };
 
-  const onMapSelect = (mapItem: any) => {
+  const onMapSelect = (id: string) => {
+    const mapItem = mapsList.filter((m) => m._id == id)[0];
     console.log(mapItem);
+    if (!mapItem) return;
     fetch(`${process.env.API_ADDRESS}/mapareas/${mapItem._id}`).then((res) => {
       console.log("fetched:", res);
       res.json().then(setMapAreas);
+      setState({ ...state, selectedMapID: id });
     });
   };
 
   const onTreeSelect = (typeName: string, mapArea: Map) => {
-    console.log({ typeName, mapArea });
     switch (typeName) {
       case "staticMeshActor":
+        setState({ ...state, loading: true });
         fetch(`${process.env.API_ADDRESS}/maparea/${mapArea.name}`).then(
           (res) => {
+            setState({ ...state, loading: false });
             console.log("fetched:", res);
             res.json().then((r) => r && setMapArea(r[0]));
           }
@@ -112,18 +122,32 @@ export default function MapsPage() {
       res.json().then(setMapsList);
     });
   }, []);
-  console.log({ mapArea });
+
   return (
-    <div>
+    <div style={{ backgroundColor: "red", height: "100%" }}>
       <Grid container spacing={3}>
         <Grid item xs={4}>
           <Paper className={classes.paper}>
-            <DropDownList
+            {/*<DropDownList
               label="Maps list"
               options={mapsList}
               getOptionLabel={(o) => o._id}
               onSelect={onMapSelect}
-            />
+            />*/}
+            <InputLabel id="mapListLabel">Map's list</InputLabel>
+            <Select
+              labelId="mapListLabel"
+              value={state.selectedMapID}
+              onChange={(e) => onMapSelect(e.target.value)}
+              displayEmpty
+              className={classes.selectEmpty}
+              inputProps={{ "aria-label": "Without label" }}
+            >
+              {mapsList &&
+                mapsList.map((map) => (
+                  <MenuItem value={map._id}>{map._id}</MenuItem>
+                ))}
+            </Select>
             <MapTreeView mapAreas={mapAreas} onSelect={onTreeSelect} />
           </Paper>
         </Grid>
