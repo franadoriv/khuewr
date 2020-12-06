@@ -14,12 +14,14 @@ import {
   Backdrop,
   CircularProgress
 } from "@material-ui/core";
-import ExternalList from "../../components/ExternalList/index";
+import ExternalList from "../../components/ExternalList";
 import SaveIcon from "@material-ui/icons/Save";
 import { SnackbarProvider, useSnackbar } from "notistack";
 import UnrealHelper from "../../utilities/UnrealHelper";
 import MapTreeView from "./../../components/MapTreeView";
-import DropDownList from "./../../components/DropDownList/index";
+import DropDownList from "./../../components/DropDownList";
+import { Map } from "./../../objects/Map";
+import MeshTable from "./../../components/MeshTable";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -49,10 +51,10 @@ const initialState = {
 export default function MapsPage() {
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
-  const [selected, setSelected] = useState("");
   const [state, setState] = React.useState(initialState);
   const [mapsList, setMapsList] = useState([]);
-  const [currentMapID, setCurrentMapID] = useState("");
+  const [mapAreas, setMapAreas] = useState<Map[]>([]);
+  const [mapArea, setMapArea] = useState<Map>(null);
 
   const handleCloseMctx = () => {
     setState({ ...initialState, selected: state.selected });
@@ -84,6 +86,24 @@ export default function MapsPage() {
 
   const onMapSelect = (mapItem: any) => {
     console.log(mapItem);
+    fetch(`${process.env.API_ADDRESS}/mapareas/${mapItem._id}`).then((res) => {
+      console.log("fetched:", res);
+      res.json().then(setMapAreas);
+    });
+  };
+
+  const onTreeSelect = (typeName: string, mapArea: Map) => {
+    console.log({ typeName, mapArea });
+    switch (typeName) {
+      case "staticMeshActor":
+        fetch(`${process.env.API_ADDRESS}/maparea/${mapArea.name}`).then(
+          (res) => {
+            console.log("fetched:", res);
+            res.json().then((r) => r && setMapArea(r[0]));
+          }
+        );
+        break;
+    }
   };
 
   useEffect(() => {
@@ -92,7 +112,7 @@ export default function MapsPage() {
       res.json().then(setMapsList);
     });
   }, []);
-
+  console.log({ mapArea });
   return (
     <div>
       <Grid container spacing={3}>
@@ -101,11 +121,10 @@ export default function MapsPage() {
             <DropDownList
               label="Maps list"
               options={mapsList}
-              //url={`${process.env.API_ADDRESS}/maps`}
               getOptionLabel={(o) => o._id}
               onSelect={onMapSelect}
             />
-            <MapTreeView />
+            <MapTreeView mapAreas={mapAreas} onSelect={onTreeSelect} />
           </Paper>
         </Grid>
         <Grid item xs={8}>
@@ -123,6 +142,8 @@ export default function MapsPage() {
               />
               <FormHelperText id="my-helper-text"></FormHelperText>
             </FormControl>
+            <br />
+            {mapArea && <MeshTable meshList={mapArea?.staticMeshActorList} />}
           </Paper>
           <Box display="flex" justifyContent="flex-end"></Box>
         </Grid>

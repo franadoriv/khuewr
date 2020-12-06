@@ -3,17 +3,15 @@ import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
 import TreeView from "@material-ui/lab/TreeView";
 import TreeItem, { TreeItemProps } from "@material-ui/lab/TreeItem";
 import Typography from "@material-ui/core/Typography";
-import MailIcon from "@material-ui/icons/Mail";
+import HomeWork from "@material-ui/icons/HomeWork";
 import DeleteIcon from "@material-ui/icons/Delete";
 import Label from "@material-ui/icons/Label";
-import SupervisorAccountIcon from "@material-ui/icons/SupervisorAccount";
-import InfoIcon from "@material-ui/icons/Info";
-import ForumIcon from "@material-ui/icons/Forum";
-import LocalOfferIcon from "@material-ui/icons/LocalOffer";
+import MapIcon from "@material-ui/icons/Map";
 import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
 import ArrowRightIcon from "@material-ui/icons/ArrowRight";
 import { SvgIconProps } from "@material-ui/core/SvgIcon";
 import { Map } from "./../../objects/Map";
+import { Paper } from "@material-ui/core";
 declare module "csstype" {
   interface Properties {
     "--tree-view-color"?: string;
@@ -91,7 +89,7 @@ function StyledTreeItem(props: StyledTreeItemProps) {
     bgColor,
     ...other
   } = props;
-
+  console.log({ other });
   return (
     <TreeItem
       label={
@@ -124,49 +122,60 @@ function StyledTreeItem(props: StyledTreeItemProps) {
 
 const useStyles = makeStyles(
   createStyles({
+    container: {
+      overflowX: "scroll",
+      width: "100%"
+    },
     root: {
-      height: 264,
-      flexGrow: 1,
-      maxWidth: 400
+      height: "100%",
+      flexGrow: 1
+      //maxWidth: 400
     }
   })
 );
 
 interface IMapTreeView {
-  areas: Array<Map>;
+  mapAreas: Array<Map>;
+  onSelect?: (typeName: string, item: Map) => void;
 }
 
 export default function MapTreeView(props: IMapTreeView) {
-  const { areas } = props;
+  const { mapAreas, onSelect } = props;
 
   const classes = useStyles();
 
   return (
-    <TreeView
-      className={classes.root}
-      defaultExpanded={["3"]}
-      defaultCollapseIcon={<ArrowDropDownIcon />}
-      defaultExpandIcon={<ArrowRightIcon />}
-      defaultEndIcon={<div style={{ width: "100%" }} />}
-    >
-      <StyledTreeItem nodeId="3" labelText="Areas" labelIcon={Label}>
-        {areas?.map((mapArea) => (
-          <StyledTreeItem
-            nodeId="5"
-            labelText={mapArea.name}
-            labelIcon={SupervisorAccountIcon}
-            labelInfo={mapArea?.staticMeshActorList?.length}
-            color="#1a73e8"
-            bgColor="#e8f0fe"
-          >
-            <StyledTreeItem
-              nodeId="4"
-              labelText="staticMeshActorList"
-              labelIcon={Label}
-            />
-          </StyledTreeItem>
-        ))}
-      </StyledTreeItem>
-    </TreeView>
+    <Paper className={classes.container}>
+      <TreeView
+        className={classes.root}
+        defaultExpanded={["3"]}
+        defaultCollapseIcon={<ArrowDropDownIcon />}
+        defaultExpandIcon={<ArrowRightIcon />}
+        defaultEndIcon={<div style={{ width: "100%" }} />}
+      >
+        <StyledTreeItem nodeId="3" labelText="Areas" labelIcon={Label}>
+          {mapAreas?.map((mapArea) => {
+            console.log({ mapArea });
+            return (
+              <StyledTreeItem
+                nodeId={mapArea._id}
+                labelText={mapArea.name}
+                labelIcon={MapIcon}
+                labelInfo={mapArea?.staticMeshActorList?.length}
+                color="#1a73e8"
+                bgColor="#e8f0fe"
+              >
+                {/*              <StyledTreeItem
+                nodeId={`${mapArea.name}.smal`}
+                labelText="staticMeshActorList"
+                labelIcon={HomeWork}
+                onClick={(evt) => onSelect?.("staticMeshActor", mapArea)}
+              />*/}
+              </StyledTreeItem>
+            );
+          })}
+        </StyledTreeItem>
+      </TreeView>
+    </Paper>
   );
 }

@@ -21,7 +21,7 @@ export interface RelativeScale3D {
   LengthSquared: number;
 }
 
-export interface StaticMeshActorList {
+export interface StaticMeshActor {
   id: string;
   name: string;
   staticMeshFile: string;
@@ -36,5 +36,5 @@ export interface Map {
   _id: string;
   name: string;
   mapid: string;
-  staticMeshActorList: StaticMeshActorList[];
+  staticMeshActorList: StaticMeshActor[];
 }

@@ -32,7 +32,7 @@ export default function DropDownList(props: IDropDownList) {
       onChange={(event: any, newValue: any | null) => {
         onSelect?.(newValue);
       }}
-      options={options || []}
+      options={props.options || options || []}
       getOptionLabel={getOptionLabel || ((option) => option.title)}
       style={{ width: "100%" }}
       renderInput={(params) => (
