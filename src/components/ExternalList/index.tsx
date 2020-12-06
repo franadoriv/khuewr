@@ -57,7 +57,7 @@ export default function ExternalList(props: IExternalList) {
   const [items, setItems] = useState([]);
   const [searchFilter, setSearchFilter] = useState("");
   let filteredItems = searchFilter
-    ? items.filter((i) => i.id.includes(searchFilter))
+    ? items.filter((i) => (i.id || i._id).includes(searchFilter))
     : items;
   if (filterCallback != null)
     filteredItems = filteredItems.filter(filterCallback);

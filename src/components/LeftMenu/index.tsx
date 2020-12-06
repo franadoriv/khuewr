@@ -101,7 +101,7 @@ export default function LeftMenu({ onMenuToggle, open }) {
       </div>
       <Divider />
       <List>
-        {["Pawns", "Animations"].map((text, index) => (
+        {["Pawns", "Animations", "Maps"].map((text, index) => (
           <ListItem key={text} component={Link} to={"/" + text.toLowerCase()}>
             <ListItemIcon>
               {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}

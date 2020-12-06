@@ -9,6 +9,7 @@ import IconButton from "@material-ui/core/IconButton";
 import MenuIcon from "@material-ui/icons/Menu";
 import AnimationsPage from "./pages/Animations/index";
 import PawnsPage from "./pages/Pawns/index";
+import MapsPage from "./pages/Maps/index";
 import UnrealRemotePage from "./pages/UnrealRemote/index";
 import LeftMenu from "./components/LeftMenu/index";
 import { Switch, Route, Link, BrowserRouter } from "react-router-dom";
@@ -112,6 +113,7 @@ export default function PersistentDrawerLeft() {
             <Route exact path="/" render={() => <UnrealRemotePage />} />
             <Route exact path="/pawns" render={() => <PawnsPage />} />
             <Route path="/animations" render={() => <AnimationsPage />} />
+            <Route path="/maps" render={() => <MapsPage />} />
             <Route path="/unreal" render={() => <UnrealRemotePage />} />
           </Switch>
         </main>
